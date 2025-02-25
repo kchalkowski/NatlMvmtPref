@@ -1,15 +1,12 @@
-#Pipeline:
-#MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF
+# Pipeline --------------------------------------------------------------------
 
-#########################
-######## Purpose ######## 
-#########################
+#MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF > PlottingSSFOutput.R
+
+# Purpose --------------------------------------------------------------------
 
 #Run iSSF by looping through individual animals
 
-##############################
-######## Script Setup ######## 
-##############################
+# Script Setup --------------------------------------------------------------------
 
 #set directory paths
 indir=paste0(home,"2_Data/Input/") #initial input read from here

@@ -1,23 +1,20 @@
-#Pipeline:
+# Pipeline --------------------------------------------------------------------
+
 #MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF > PlottingSSFOutput
 
-#########################
-######## Purpose ######## 
-#########################
+# Purpose --------------------------------------------------------------------
 
 #Run iSSF by looping through individual animals
 
-##############################
-######## Script Setup ######## 
-##############################
+# Script Setup --------------------------------------------------------------------
 
 #set directory paths
-indir=paste0(home,"2_Data/Input/") #initial input read from here
-objdir=paste0(home,"2_Data/Objects/") #intermediate objects, lookup tables, etc. go here
-outdir=paste0(home,"4_Output/") #intermediate objects, lookup tables, etc. go here
+indir=file.path(home,"2_Data","Input") #initial input read from here
+objdir=file.path(home,"2_Data","Objects") #intermediate objects, lookup tables, etc. go here
+outdir=file.path(home,"4_Output") #intermediate objects, lookup tables, etc. go here
 
 #input file
-steps_g=readRDS(paste0(objdir,"steps_grouped.rds"))
+steps_g=readRDS(file.path(objdir,"steps_grouped.rds"))
 
 #load libraries
 library(raster)
@@ -35,9 +32,7 @@ library(forcats)
 library(fs)
 library(stringr)
 
-##############################################
-######## SSF loop through pig/periods ########
-##############################################
+# Loop through pig/periods -----------------------------------------------------
 
 #Set up loop by pig/periods for each conditional logistic model using contr.sum. 
 groups=unique(steps_g$avail_group)
@@ -142,7 +137,8 @@ for(j in 1:length(groups)) {
   
 }
 
-#####Summaries
+# Format outputs -----------------------------------------------------
+
 #relabel
 AllGroupParms<-AllGroupParms %>%
   mutate(nlcd_str = case_when(nlcd == 11 ~ 'Open_Water',
@@ -198,6 +194,8 @@ all_parms_total<-all_parms_total %>%
                               nlcd == 95 ~ 'Emergent_Herbaceous_Wetlands'
   ))
 
+
+# Write outputs -----------------------------------------------------
 
 #write out averaged parm tables
 write.csv(AllGroupParms,paste0(objdir,"AllGroupParms.csv"))
