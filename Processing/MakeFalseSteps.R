@@ -246,7 +246,7 @@ PigsInfo <- unique(PigsInfo)
 
 #Pull animal metadata back to false steps df
 rf_all<-merge(rf_all,PigsInfo, by="animalnum")
-nrow(rf_all)
+nrow(rf_all) #2313936
 
 # Save outputs -----------------------------------------------------
 
