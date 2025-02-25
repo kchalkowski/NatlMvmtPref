@@ -1,17 +1,13 @@
 #Pipeline:
 #MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF
 
-#########################
-######## Purpose ######## 
-#########################
+# Purpose -----------------------------------------------------------
 
 #Initializes the population matrix for spatial meta-population model
 #Also includes option to initialize individual/group in single location on grid
 #Option to incorporate heterogeneous landscape preference is in progress
 
-##############################
-######## Script Setup ######## 
-##############################
+# Script Setup ------------------------------------------------------
 
 #set home directory
 home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
@@ -41,9 +37,7 @@ geo <- read.csv(paste0(indir,"geolocsnatl.csv")) #geo=PigsTotal2
 #NLCD <- raster(paste0(indir,"nlcd_2016_land_cover_l48_20210604")) #use this if not using aliasing
 LCD <- raster(mactheknife::resolve_alias(paste0(indir,"nlcd_2016_land_cover_l48_20210604"))) #aliasing read method
 
-#################################
-######## Data formatting ######## 
-#################################
+# Data formatting ------------------------------------------------------
 
 # Fix MI pigs that ended up in MS
 geo$state[geo$study=="PhD_MI"]<-"MI"
@@ -75,9 +69,7 @@ Alln <- steps %>%
   dplyr::summarise(
     n=n())
 
-##########################################
-######## Subsampling geolocations ######## 
-##########################################
+# Subsampling geolocations -----------------------------------------------------
 
 #iSSF setting up steps by every 6 hours as a separate track. 
 #Loop each pig four times for each set of 6 hours.
@@ -176,9 +168,8 @@ length(unique(realsteps_gt10$animalnum)) #464 ids after removing pigs without at
 #write out subsampled steps
 saveRDS(realsteps_gt10, paste0(objdir,"realsteps_subsampled.rds"))
 
-####################################
-######## Create False steps ######## 
-####################################
+# Create false steps -----------------------------------------------------
+
 #Need edit this to loop through pig/periods
 #might need to undo steps by burst, just do by steps
 
@@ -223,6 +214,9 @@ for(p in 1:length(unique(pigperIDs))){
   }
 }
 
+
+# Format and check output -----------------------------------------------------
+
 colnames(rf_all)[ncol(rf_all)]<-"nlcd"
 
 #should no longer be NAs with direction_p=1 fix
@@ -243,12 +237,14 @@ PigsInfo  <-subset(geosf,select=c("animalnum","sex","study","state","animalid"))
 PigsInfo <- st_drop_geometry(PigsInfo)
 PigsInfo <- unique(PigsInfo)
 
-#save for later
-saveRDS(PigsInfo,paste0(objdir,"PigsInfo.rds"))
-
 #Pull animal metadata back to false steps df
 rf_all<-merge(rf_all,PigsInfo, by="animalnum")
 nrow(rf_all)
+
+# Save outputs -----------------------------------------------------
+
+#save for later
+saveRDS(PigsInfo,paste0(objdir,"PigsInfo.rds"))
 
 #Write false steps df
 saveRDS(rf_all, paste0(objdir,"real_false_steps.rds"))
