@@ -1,9 +1,8 @@
-#Pipeline:
+# Pipeline --------------------------------------------------------------------
+
 #MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF
 
-#########################
-######## Purpose ######## 
-#########################
+# Purpose --------------------------------------------------------------------
 
 #Run iSSF on full dataset
 #Format steps for iSSF
@@ -11,9 +10,7 @@
 #Check intxn with step length on full model
 #Run leave-one-out loop by study
 
-##############################
-######## Script Setup ######## 
-##############################
+# Script Setup --------------------------------------------------------------------
 
 #set home directory
 home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
@@ -40,14 +37,13 @@ objdir=file.path(home,"2_Data","Objects") #intermediate objects, lookup tables, 
 outdir=file.path(home,"4_Output") #intermediate objects, lookup tables, etc. go here
 
 #load data
-#geo <- read.csv(paste0(indir,"geolocsnatl.csv")) #geo=PigsTotal2
-#NLCD <- raster(paste0(indir,"nlcd_2016_land_cover_l48_20210604")) #use this if not using aliasing
-#LCD <- raster(mactheknife::resolve_alias(paste0(indir,"nlcd_2016_land_cover_l48_20210604"))) #aliasing read method
 steps_g=readRDS(file.path(objdir,"steps_grouped.rds",fsep=.Platform$file.sep))
 
-#################################
-######## Loop iSSF Model ######## 
-#################################
+#source functions
+source(file.path(home,"1_Scripts","Analysis","Functions","iSSF_Function.R"))
+
+# Loop iSSF Model --------------------------------------------------------------------
+groups=unique(steps_g$avail_group)
 
 #Set up loop by group for each conditional logistic model using contr.sum. 
 for(i in 1:length(groups)) {
@@ -93,22 +89,13 @@ for(i in 1:length(groups)) {
   
 }
 
-#################################
 
 # Tables of study, ID, and group and land use type
 Table5<- table(steps_g$study,steps_g$avail_group,dnn=c("study","group"))
-write.csv(Table5,paste0(objdir,"StudyGroups.csv"))
-
 Table2<-table(steps_g$nlcd,steps_g$avail_group,steps_g$case_,dnn=c("nlcd","avail_group","case"))
-write.csv(Table2,paste0(objdir,"Group_NLCD.csv"))
-
 Table3<-table(steps_g$animalnum,steps_g$avail_group,dnn=c("animalnum","avail_group"))
-write.csv(Table3,paste0(objdir,"Group_ID.csv"))
 
-####################################################
-######## Leave-one-out sensitivity analysis ######## 
-####################################################
-
+# Leave one out sensitivity analysis ------------------------------------------
 
 #subset to groups with >1 study
 grp_singles=table(steps_g$study,steps_g$avail_group,dnn=c("study","avail_group"))
@@ -127,10 +114,6 @@ l1o_steps=droplevels(l1o_steps)
 #Set up vectors needed for loop
 studies <- unique(l1o_steps[, c("study")])
 groups <- unique(l1o_steps[, c("avail_group")])
-
-#Without SL - verification - each group is run with one study at a time dropped to look at effect on estimates and model
-#Data.Path <- "C:/Users/lexis/Downloads/ISSFOctVerify"
-#setwd(Data.Path)
 
 #create empty data frame for output
 l1o_out_all=data.frame()
@@ -261,8 +244,20 @@ for(j in 1:length(groups)) {
 } #for loop study
 
 
+#Write SSF Full output?
+#SSF_full
+
 #Write out leave-one-out analysis tables
 write.csv(l1o_out_all,file.path(objdir,"l1o_model_summaries.csv",fsep=.Platform$file.sep))
 write.csv(parms_out_all,file.path(objdir,"l1o_parm_summaries.csv",fsep=.Platform$file.sep))
 
+# Tables of study, ID, and group and land use type
+Table5<- table(steps_g$study,steps_g$avail_group,dnn=c("study","group"))
+write.csv(Table5,paste0(objdir,"StudyGroups.csv"))
+
+Table2<-table(steps_g$nlcd,steps_g$avail_group,steps_g$case_,dnn=c("nlcd","avail_group","case"))
+write.csv(Table2,paste0(objdir,"Group_NLCD.csv"))
+
+Table3<-table(steps_g$animalnum,steps_g$avail_group,dnn=c("animalnum","avail_group"))
+write.csv(Table3,paste0(objdir,"Group_ID.csv"))
 
