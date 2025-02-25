@@ -1,15 +1,12 @@
-#Pipeline:
+# Pipeline --------------------------------------------------------------------
+
 #MakeFalseSteps > MakeAvailabilityGroups > iSSF > IDsPigsSSF
 
-#########################
-######## Purpose ######## 
-#########################
+# Purpose --------------------------------------------------------------------
 
 #Set availability groups based on nlcd land class in true/false steps
 
-##############################
-######## Script Setup ######## 
-##############################
+# Script Setup --------------------------------------------------------------------
 
 #set home directory
 home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
@@ -31,16 +28,14 @@ library(tidyverse)
 library(forcats)
 
 #set directory paths
-indir=paste0(home,"2_Data/Input/") #initial input read from here
-objdir=paste0(home,"2_Data/Objects/") #intermediate objects, lookup tables, etc. go here
-outdir=paste0(home,"4_Output/") #intermediate objects, lookup tables, etc. go here
+indir=file.path(home,"2_Data","Input") #initial input read from here
+objdir=file.path(home,"2_Data","Objects") #intermediate objects, lookup tables, etc. go here
+outdir=file.path(home,"4_Output") #intermediate objects, lookup tables, etc. go here
 
 #load data
-steps=readRDS(paste0(objdir,"real_false_steps.rds"))
+steps=readRDS(file.path(objdir,"real_false_steps.rds",fsep=.Platform$file.sep))
 
-#################################
-######## Data formatting ######## 
-#################################
+# Data formatting ------------------------------------------------------------
 
 #set all developed to same level
 steps$nlcd[steps$nlcd==22]<-21
@@ -65,6 +60,8 @@ steps<-steps %>%
                               nlcd == 90 ~ 'Woody_Wetlands',
                               nlcd == 95 ~ 'Emergent_Herbaceous_Wetlands'
   ))
+
+# Determine availability groups ----------------------------------------------
 
 #Start sub-setting pigs by access to land types
 Ids2b<-as.data.frame(table(steps$animalnum,steps$nlcd_str,steps$case_))
@@ -96,9 +93,6 @@ Available <-subset(Access,select=c(animalnum,nlcd,avail))
 
 #get wide version
 Available_w<-spread(Available,key=nlcd,value=avail)
-
-#Group_Access_Key<-unique(Available_w[,14:17])
-#View(Group_Access_Key)
 
 #Make general columns for forest, wetland and urban
 # Make new variable for pigs that have access to forest, urban areas and wetlands (Crops already a single land type)
@@ -132,9 +126,6 @@ Avail_Group_Counts<-as.data.frame(table(Available_w$avail_group))
 
 colnames(Avail_Group_Counts)<-c("avail_group","freq")
 
-#Write out availability group df
-#saveRDS(Available_w,paste0("Avail_Group_df.rds"))
-
 #Get key for animalnum/avail group matching
 Avail_Group_Key <- Available_w[, c("animalnum","avail_group")]
 
@@ -164,6 +155,8 @@ groups <- unique(steps_g[, c("avail_group")])
 #Get reversed order nlcd
 steps_g$nlcd_rev<-fct_rev(steps_g$nlcd)
 
+# Save outputs ------------------------------------------------------------
+
 #Write out objects needed for IDsPigsSSF.R
-saveRDS(steps_g,paste0(objdir,"steps_grouped.rds"))
+saveRDS(steps_g,file.path(objdir,"steps_grouped.rds",fsep=.Platform$file.sep))
 

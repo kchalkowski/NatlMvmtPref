@@ -35,15 +35,15 @@ library(tidyverse)
 library(forcats)
 
 #set directory paths
-indir=paste0(home,"2_Data/Input/") #initial input read from here
-objdir=paste0(home,"2_Data/Objects/") #intermediate objects, lookup tables, etc. go here
-outdir=paste0(home,"4_Output/") #intermediate objects, lookup tables, etc. go here
+indir=file.path(home,"2_Data","Input") #initial input read from here
+objdir=file.path(home,"2_Data","Objects") #intermediate objects, lookup tables, etc. go here
+outdir=file.path(home,"4_Output") #intermediate objects, lookup tables, etc. go here
 
 #load data
 #geo <- read.csv(paste0(indir,"geolocsnatl.csv")) #geo=PigsTotal2
 #NLCD <- raster(paste0(indir,"nlcd_2016_land_cover_l48_20210604")) #use this if not using aliasing
 #LCD <- raster(mactheknife::resolve_alias(paste0(indir,"nlcd_2016_land_cover_l48_20210604"))) #aliasing read method
-steps_g=readRDS(paste0(objdir,"steps_grouped.rds"))
+steps_g=readRDS(file.path(objdir,"steps_grouped.rds",fsep=.Platform$file.sep))
 
 #################################
 ######## Loop iSSF Model ######## 
@@ -262,7 +262,7 @@ for(j in 1:length(groups)) {
 
 
 #Write out leave-one-out analysis tables
-write.csv(l1o_out_all,paste0(objdir,"l1o_model_summaries.csv"))
-write.csv(parms_out_all,paste0(objdir,"l1o_parm_summaries.csv"))
+write.csv(l1o_out_all,file.path(objdir,"l1o_model_summaries.csv",fsep=.Platform$file.sep))
+write.csv(parms_out_all,file.path(objdir,"l1o_parm_summaries.csv",fsep=.Platform$file.sep))
 
 
