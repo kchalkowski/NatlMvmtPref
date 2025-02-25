@@ -251,9 +251,9 @@ nrow(rf_all)
 # Save outputs -----------------------------------------------------
 
 #save for later
-saveRDS(PigsInfo,paste0(objdir,"PigsInfo.rds"))
+saveRDS(PigsInfo,file.path(objdir,"PigsInfo.rds",fsep=.Platform$file.sep))
 
 #Write false steps df
-saveRDS(rf_all, paste0(objdir,"real_false_steps.rds"))
+saveRDS(rf_all, file.path(objdir,"real_false_steps.rds",fsep=.Platform$file.sep))
 
 
