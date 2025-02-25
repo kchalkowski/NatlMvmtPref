@@ -29,8 +29,8 @@ library(tidyverse)
 library(purrr)
 
 #set directory paths
-indir=paste0(home,"2_Data/Input/") #initial input read from here
-objdir=paste0(home,"2_Data/Objects/") #intermediate objects, lookup tables, etc. go here
+indir=file.path(home,"2_Data","Input",fsep=.Platform$file.sep) #initial input read from here
+objdir=file.path(home,"2_Data","Objects",fsep=.Platform$file.sep) #intermediate objects, lookup tables, etc. go here
 
 #load data
 geo <- read.csv(paste0(indir,"geolocsnatl.csv")) #geo=PigsTotal2
@@ -184,7 +184,6 @@ saveRDS(realsteps_gt10, paste0(objdir,"realsteps_subsampled.rds"))
 #create unique ID for each pig/period
 realsteps_gt10$pigperID<-unique_identifier(realsteps_gt10,fields=c("animalnum","period"))
 pigperIDs=unique(realsteps_gt10$pigperID)
-
 for(p in 1:length(unique(pigperIDs))){
   print(p)
   dat=realsteps_gt10[realsteps_gt10$pigperID==pigperIDs[p],]
@@ -202,7 +201,15 @@ for(p in 1:length(unique(pigperIDs))){
   dat2<-dat%>%random_steps(n=15)%>%
                           extract_covariates(LCD)
   if(any(dat2$Height==0)){
-    stop("nonsensical nlcd value")
+    dat.0=dat2[dat2$Height==0,]
+    dat2=dat2[!dat2$Height==0,]
+    dat.n<-dat%>%random_steps(n=nrow(dat.0))%>%
+      extract_covariates(LCD)
+    while(any(dat.n$Height==0)){
+      dat.n<-dat%>%random_steps(n=nrow(dat.0))%>%
+        extract_covariates(LCD)
+    }
+    dat2=rbind(dat2,dat.n)
   }
   #NAs happen when step has direction_p=NA
   #dat=dat[-which(colnames(dat)=="direction_p")]
