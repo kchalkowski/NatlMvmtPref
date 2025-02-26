@@ -13,7 +13,7 @@
 # Script Setup --------------------------------------------------------------------
 
 #set home directory
-home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
+home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF"
 
 # load libraries
 #remotes::install_github("hrbrmstr/mactheknife") #install if using aliasing for large spatial files
@@ -248,16 +248,17 @@ for(j in 1:length(groups)) {
 #SSF_full
 
 #Write out leave-one-out analysis tables
+write.csv(SSF_full,file.path(objdir,"SSF_full.csv",fsep=.Platform$file.sep))
 write.csv(l1o_out_all,file.path(objdir,"l1o_model_summaries.csv",fsep=.Platform$file.sep))
 write.csv(parms_out_all,file.path(objdir,"l1o_parm_summaries.csv",fsep=.Platform$file.sep))
 
 # Tables of study, ID, and group and land use type
 Table5<- table(steps_g$study,steps_g$avail_group,dnn=c("study","group"))
-write.csv(Table5,paste0(objdir,"StudyGroups.csv"))
+write.csv(Table5,file.path(objdir,"StudyGroups.csv"))
 
 Table2<-table(steps_g$nlcd,steps_g$avail_group,steps_g$case_,dnn=c("nlcd","avail_group","case"))
-write.csv(Table2,paste0(objdir,"Group_NLCD.csv"))
+write.csv(Table2,file.path(objdir,"Group_NLCD.csv"))
 
 Table3<-table(steps_g$animalnum,steps_g$avail_group,dnn=c("animalnum","avail_group"))
-write.csv(Table3,paste0(objdir,"Group_ID.csv"))
+write.csv(Table3,file.path(objdir,"Group_ID.csv"))
 

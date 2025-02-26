@@ -198,14 +198,14 @@ all_parms_total<-all_parms_total %>%
 # Write outputs -----------------------------------------------------
 
 #write out averaged parm tables
-write.csv(AllGroupParms,paste0(objdir,"AllGroupParms.csv"))
-write.csv(AllGroupParmsSig,paste0(objdir,"AllGroupParmsSig.csv"))
-write.csv(all_parms_total,paste0(objdir,"all_parms_total.csv"))
+write.csv(AllGroupParms,file.path(objdir,"AllGroupParms.csv"))
+write.csv(AllGroupParmsSig,file.path(objdir,"AllGroupParmsSig.csv"))
+write.csv(all_parms_total,file.path(objdir,"all_parms_total.csv"))
 
 #rds versions for next script
-saveRDS(AllGroupParms,paste0(objdir,"AllGroupParms.rds"))
-saveRDS(AllGroupParmsSig,paste0(objdir,"AllGroupParmsSig.rds"))
-saveRDS(all_parms_total,paste0(objdir,"all_parms_total.rds"))
+saveRDS(AllGroupParms,file.path(objdir,"AllGroupParms.rds"))
+saveRDS(AllGroupParmsSig,file.path(objdir,"AllGroupParmsSig.rds"))
+saveRDS(all_parms_total,file.path(objdir,"all_parms_total.rds"))
 
 
 

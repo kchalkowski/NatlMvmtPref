@@ -71,6 +71,5 @@ ggplot(AllGroupParmsSig, aes(avail_group, nlcd_str, fill=Mean)) +
     colours = colours[c(1, seq_along(colours), length(colours))],
     values  = c(0, scales::rescale(colour_breaks, from = range(AllGroupParmsSig$Mean[!is.na(AllGroupParmsSig$Mean)])), 1))
 
-View(AllGroupParmsSig)
 
 
