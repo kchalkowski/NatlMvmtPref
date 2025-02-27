@@ -7,6 +7,7 @@
 #Run iSSF by looping through individual animals
 
 # Script Setup --------------------------------------------------------------------
+home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF"
 
 #set directory paths
 indir=file.path(home,"2_Data","Input") #initial input read from here
@@ -42,7 +43,8 @@ library(sjPlot)
 ######## Make dotplots for each LC/group ########
 #################################################
 
-ggplot(data=AllGroupParmsSig)+
+ags.dots=
+  ggplot(data=AllGroupParmsSig)+
   geom_segment(
     mapping=aes(x=q05,xend=q95,y=avail_group,yend=avail_group,color=avail_group),alpha=0.5)+
   #geom_point(mapping=aes(x=min,y=avail_group,color=avail_group),alpha=0.5)+
@@ -52,7 +54,7 @@ ggplot(data=AllGroupParmsSig)+
   geom_vline(xintercept=0,linetype="dotdash",color="red",linewidth=0.6)+
   theme_ipsum()
 
-ggplot(data=AllGroupParms)+
+agp=ggplot(data=AllGroupParms)+
   geom_segment(
     mapping=aes(x=q05,xend=q95,y=avail_group,yend=avail_group,color=avail_group),alpha=0.5)+
   #geom_point(mapping=aes(x=min,y=avail_group,color=avail_group),alpha=0.5)+
@@ -65,11 +67,13 @@ ggplot(data=AllGroupParms)+
 colours <- c("#ff5b42","#ff7530","#ffffff","#73e5ff","#4b9ff2")
 colour_breaks <- c(-4,-1,0,1,4)
 
-ggplot(AllGroupParmsSig, aes(avail_group, nlcd, fill=Mean)) + 
+ags_heat=
+  ggplot(AllGroupParmsSig, aes(avail_group, nlcd, fill=Mean)) + 
   geom_tile(linewidth=0.8)+theme_ipsum()+
   scale_fill_gradientn(
     colours = colours[c(1, seq_along(colours), length(colours))],
     values  = c(0, scales::rescale(colour_breaks, from = range(AllGroupParmsSig$Mean[!is.na(AllGroupParmsSig$Mean)])), 1))
 
-
+ggsave(file.path(outdir,"AGS_dots.png"),plot=ags.dots, height=6.5,width=9,units="in")
+ggsave(file.path(outdir,"AGS_heat.png"),plot=ags_heat, height=3.25,width=4.5,units="in")
 
