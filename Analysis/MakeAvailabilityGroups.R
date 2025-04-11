@@ -9,7 +9,7 @@
 # Script Setup --------------------------------------------------------------------
 
 #set home directory
-home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
+home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/2_Projects/StatPigMvmt/Pipeline_SSF/"
 
 # load libraries
 #remotes::install_github("hrbrmstr/mactheknife") #install if using aliasing for large spatial files
@@ -134,6 +134,12 @@ Avail_Group_Key_LC<-unique(Available_w[,c(17,3,14:16)])
 
 #merge availability group IDs with steps to loop through groups
 steps_g<-merge(steps,Avail_Group_Key, by="animalnum")
+
+View(steps_g)
+
+#get summary table with id, group, study
+studyanimalgroup=unique(steps_g[,c(1,21,19,23)])
+write.csv(studyanimalgroup,file.path(outdir,"studyanimalgroup.csv"),row.names=FALSE)
 
 #Order steps by group
 #convert group to numeric temporarily
