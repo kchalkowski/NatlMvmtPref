@@ -64,12 +64,11 @@ AllGroupParmsSig<-AllGroupParmsSig %>%
 ######## Make dotplots for each LC/group ########
 #################################################
 
+
 ags.dots=
   ggplot(data=AllGroupParmsSig)+
   geom_segment(
     mapping=aes(x=q05,xend=q95,y=avail_group,yend=avail_group,color=avail_group),alpha=0.5)+
-  #geom_point(mapping=aes(x=min,y=avail_group,color=avail_group),alpha=0.5)+
-  #geom_point(mapping=aes(x=max,y=avail_group,color=avail_group),alpha=0.5)+
   facet_wrap(~nlcd_str)+
   geom_point(mapping=aes(x=Mean,y=avail_group,color=avail_group,size=n))+
   geom_vline(xintercept=0,linetype="dotdash",color="red",linewidth=0.6)+

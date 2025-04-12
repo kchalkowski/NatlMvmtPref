@@ -3,9 +3,7 @@
 
 # Purpose -----------------------------------------------------------
 
-#Initializes the population matrix for spatial meta-population model
-#Also includes option to initialize individual/group in single location on grid
-#Option to incorporate heterogeneous landscape preference is in progress
+#Make false steps with national geolocation dataset
 
 # Script Setup ------------------------------------------------------
 
@@ -13,8 +11,6 @@
 home<-"/Users/kayleigh.chalkowski/Library/CloudStorage/OneDrive-USDA/Projects/StatPigMvmt/Pipeline_SSF/"
 
 # load libraries
-#remotes::install_github("hrbrmstr/mactheknife") #install if using aliasing for large spatial files
-#library(mactheknife) #only load this if using alias as pointer to spatial files
 library(raster)
 library(amt)
 library(sf)
@@ -34,7 +30,6 @@ objdir=file.path(home,"2_Data","Objects",fsep=.Platform$file.sep) #intermediate 
 
 #load data
 geo <- read.csv(paste0(indir,"geolocsnatl.csv")) #geo=PigsTotal2
-#NLCD <- raster(paste0(indir,"nlcd_2016_land_cover_l48_20210604")) #use this if not using aliasing
 LCD <- raster(mactheknife::resolve_alias(paste0(indir,"nlcd_2016_land_cover_l48_20210604"))) #aliasing read method
 
 # Data formatting ------------------------------------------------------
